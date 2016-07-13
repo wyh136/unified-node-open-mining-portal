@@ -196,7 +196,7 @@ module.exports = function(logger){
                     tempstr.Auxes[tmp[0]]=tmp[1];
 
                 }
-                redisClient.hset('AuxAddresses',workerName,JSON.stringify(tempstr),function(err){logger.warn('update auxaddresses failure');});
+                redisClient.hset('AuxAddresses',workerName,JSON.stringify(tempstr),function(err){logger.warn('update auxaddresses failure:'+err);});
                 logger.debug(logSystem, logComponent, logSubCat, authString + ' ' + workerName + ':' + password + ' [' + ip + ']');
                 callback({
                     error: null,
