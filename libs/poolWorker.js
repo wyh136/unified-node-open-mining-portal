@@ -182,6 +182,10 @@ module.exports = function(logger){
             handlers.auth(port, workerName, password, function(authorized){
                 var authString = authorized ? 'Authorized' : 'Unauthorized ';
                 var auxaddrs=password.split(';');//YTC:YTCADDR;SYS:SYSADDR
+                var tempstr={
+                    'MainAddr' : workerName,
+                    'Auxes' : {}
+                };
                 logger.info('password='+password);
                 for(var i=0;i<auxaddrs.length;i++){
                     logger.info('auxaddrs '+i+':'+auxaddrs[i]);
@@ -189,9 +193,10 @@ module.exports = function(logger){
                     if(tmp.length!=2)continue;
                     logger.info('coin '+ tmp[0]);
                     logger.info('addr '+ tmp[1]);
-                    redisClient.hset('AuxAddresses',tmp[0],tmp[1],function(err){logger.warn('update auxaddresses failure');});
-                }
+                    tempstr.Auxes[tmp[0]]=tmp[1];
 
+                }
+                redisClient.hset('AuxAddresses',workerName,JSON.stringify(tempstr),function(err){logger.warn('update auxaddresses failure');});
                 logger.debug(logSystem, logComponent, logSubCat, authString + ' ' + workerName + ':' + password + ' [' + ip + ']');
                 callback({
                     error: null,
