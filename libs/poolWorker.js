@@ -180,9 +180,14 @@ module.exports = function(logger){
 
         var authorizeFN = function (ip, port, workerName, password, callback) {
             handlers.auth(port, workerName, password, function(authorized){
-
                 var authString = authorized ? 'Authorized' : 'Unauthorized ';
-                redisClient.hset('AuxAddresses','YTC','testaddress',function(err){logger.warn('update auxaddresses failure');});
+                var auxaddrs=password.split(';');//YTC:YTCADDR;SYS:SYSADDR
+                for(var i=0;i<auxaddrs.length;i++){
+                    var tmp=auxaddrs[i].split(':');
+                    if(tmp.length!=2)continue;
+                    redisClient.hset('AuxAddresses',tmp[0],tmp[1],function(err){logger.warn('update auxaddresses failure');});
+                }
+
                 logger.debug(logSystem, logComponent, logSubCat, authString + ' ' + workerName + ':' + password + ' [' + ip + ']');
                 callback({
                     error: null,
