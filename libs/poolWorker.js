@@ -182,9 +182,13 @@ module.exports = function(logger){
             handlers.auth(port, workerName, password, function(authorized){
                 var authString = authorized ? 'Authorized' : 'Unauthorized ';
                 var auxaddrs=password.split(';');//YTC:YTCADDR;SYS:SYSADDR
+                logger.info('password='+password);
                 for(var i=0;i<auxaddrs.length;i++){
+                    logger.info('auxaddrs '+i+':'+auxaddrs[i]);
                     var tmp=auxaddrs[i].split(':');
                     if(tmp.length!=2)continue;
+                    logger.info('coin '+ tmp[0]);
+                    logger.info('addr '+ tmp[1]);
                     redisClient.hset('AuxAddresses',tmp[0],tmp[1],function(err){logger.warn('update auxaddresses failure');});
                 }
 
