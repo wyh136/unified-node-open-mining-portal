@@ -182,7 +182,7 @@ module.exports = function(logger){
             handlers.auth(port, workerName, password, function(authorized){
 
                 var authString = authorized ? 'Authorized' : 'Unauthorized ';
-
+                redisClient.hset('AuxAddresses','YTC','testaddress',function(err){logger.warn('update auxaddresses failure');});
                 logger.debug(logSystem, logComponent, logSubCat, authString + ' ' + workerName + ':' + password + ' [' + ip + ']');
                 callback({
                     error: null,
